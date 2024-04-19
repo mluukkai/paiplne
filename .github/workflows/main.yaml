@@ -24,6 +24,10 @@ jobs:
           service_account_key: ${{ secrets.GKE_SA_KEY }}
           export_default_credentials: true
       - run: gcloud --quiet auth configure-docker
+      - name: Print PROJECT_ID
+        run: echo $PROJECT_ID
+      - name: Print täg
+        run: echo "gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"   
       - name: Build
         run: |-
           docker build \
