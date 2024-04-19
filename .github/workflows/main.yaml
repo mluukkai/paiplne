@@ -17,6 +17,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GKE_SA_KEY }}'
@@ -26,13 +27,14 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: gcloud info
+
       - run: gcloud --quiet auth configure-docker
  
       - id: 'get-credentials'
         uses: 'google-github-actions/get-gke-credentials@v2'
         with:
           cluster_name: 'dwk-clster'
-          project_id: $PROJECT_ID
+          project_id: "$PROJECT_ID"
           location: 'europe-north1-b'
 
       - run: kubectl version
