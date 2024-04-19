@@ -32,7 +32,7 @@ jobs:
         uses: 'google-github-actions/get-gke-credentials@v2'
         with:
           cluster_name: 'dwk-clster'
-          project_id: dwk-gke-420519
+          project_id: $PROJECT_ID
           location: 'europe-north1-b'
 
       - run: kubectl version
@@ -49,12 +49,9 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
-
       - name: Deploy
         run: |-
           kustomize edit set image PROJECT/IMAGE=gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment $IMAGE
-    
-      - name: final step
-        run: kubectl get services -o wide
+          kubectl get services -o wide
