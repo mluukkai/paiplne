@@ -34,8 +34,8 @@ jobs:
         uses: 'google-github-actions/get-gke-credentials@v2'
         with:
           cluster_name: 'dwk-clster'
-          project_id: ${{ $PROJECT_ID }}
-          location: 'europe-north1-b'
+          project_id: '${{ $PROJECT_ID }}'
+          location: '${{ $GKE_ZONE }}'
 
       - run: kubectl version
 
