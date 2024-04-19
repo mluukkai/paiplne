@@ -28,6 +28,15 @@ jobs:
         run: gcloud info
       - run: gcloud --quiet auth configure-docker
  
+      - id: 'get-credentials'
+        uses: 'google-github-actions/get-gke-credentials@v2'
+        with:
+          cluster_name: 'dwk-clster'
+          project_id: dwk-gke-420519
+          location: 'europe-north1-b'
+
+      - run: kubectl version
+
       - name: Build
         run: |-
           docker build \
@@ -40,7 +49,6 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
-      - run: kubectl version
 
       - name: Deploy
         run: |-
