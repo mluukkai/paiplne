@@ -9,7 +9,7 @@ env:
   GKE_ZONE: europe-north1-b
   IMAGE: dwk-environments
   DEPLOYMENT: dwk-environments
-  NAMESPACE: ${{ github.ref_name != 'main' && 'default' || github.ref_name }}
+  NAMESPACE: ${{ github.ref_name == 'main' && 'default' || github.ref_name }}
 
 jobs:
   build-publish-deploy:
@@ -17,16 +17,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: print namespace
-        run: | 
-          echo namespace: $NAMESPACE
-
-      - name: github context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -65,10 +55,11 @@ jobs:
     
       - name: Deploy
         run: |-
-          kubectl create namespace ${GITHUB_REF#refs/heads/} || true
-          kubectl config set-context --current --namespace=${GITHUB_REF#refs/heads/}
-          kustomize edit set namespace ${GITHUB_REF#refs/heads/}
+          kubectl create namespace ${env.NAMESPACE} || true
+          kubectl config set-context --current --namespace=${env.NAMESPACE}
+          kustomize edit set namespace ${env.NAMESPACE}
           kustomize edit set image PROJECT/IMAGE=gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment $DEPLOYMENT
           kubectl get services -o wide
+          kubectl config get-contexts
