@@ -1,5 +1,13 @@
 name: Branch Deleted
 on: delete
+
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: dwk-clster
+  GKE_ZONE: europe-north1-b
+  NAMESPACE: ${{ github.event.ref }}
+
 jobs:
   delete:
     if: github.event.ref_type == 'branch'
@@ -9,3 +17,4 @@ jobs:
         run: |
           echo "Clean up for branch ${{ github.event.ref }}"
           echo "Clean up for branch ${{ github.ref_name }}"
+          echo "Clean up for branch $NAMESPACE"
