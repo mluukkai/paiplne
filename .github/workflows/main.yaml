@@ -9,8 +9,7 @@ env:
   GKE_ZONE: europe-north1-b
   IMAGE: dwk-environments
   DEPLOYMENT: dwk-environments
-  # ${{ GITHUB_REF#refs/heads/  == 'main' && 'main' || GITHUB_REF#refs/heads/ }} 
-  NAMESPACE2: ${{ github.ref != 'refs/heads/main' && 'default' || github.ref }}
+  NAMESPACE: ${{ github.ref_name != 'main' && 'default' || github.ref_name }}
 
 jobs:
   build-publish-deploy:
@@ -19,15 +18,9 @@ jobs:
 
     steps:
 
-      - name: define namespace
-        run: | 
-          NAMESPACE=main
-          echo namespace: $NAMESPACE
-
       - name: print namespace
         run: | 
           echo namespace: $NAMESPACE
-          echo namespace2: $NAMESPACE2
 
       - name: github context
         env:
