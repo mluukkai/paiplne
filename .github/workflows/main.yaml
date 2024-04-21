@@ -55,10 +55,10 @@ jobs:
       - name: define namespace
         run: | 
           NAMESPACE=main
+          echo namespace: $NAMESPACE
 
       - name: print namespace
         run: | 
-          DATABASE_URL=MyURL
           echo namespace: $NAMESPACE
 
       - name: Deploy
