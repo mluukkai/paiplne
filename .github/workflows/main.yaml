@@ -9,6 +9,7 @@ env:
   GKE_ZONE: europe-north1-b
   IMAGE: dwk-environments
   DEPLOYMENT: dwk-environments
+  NAMESPACE2: ${{ GITHUB_REF#refs/heads/ == 'main' && 'main' || GITHUB_REF#refs/heads/ }} 
 
 jobs:
   build-publish-deploy:
@@ -60,6 +61,7 @@ jobs:
       - name: print namespace
         run: | 
           echo namespace: $NAMESPACE
+          echo namespace: $NAMESPACE2
 
       - name: Deploy
         run: |-
