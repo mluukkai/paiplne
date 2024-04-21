@@ -8,6 +8,7 @@ env:
   GKE_CLUSTER: dwk-clster
   GKE_ZONE: europe-north1-b
   IMAGE: dwk-environments
+  DEPLOYMENT: dwk-environments
 
 jobs:
   build-publish-deploy:
@@ -55,5 +56,5 @@ jobs:
         run: |-
           kustomize edit set image PROJECT/IMAGE=gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment $IMAGE
+          kubectl rollout status deployment $DEPLOYMENT
           kubectl get services -o wide
