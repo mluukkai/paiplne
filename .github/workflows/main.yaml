@@ -10,7 +10,7 @@ env:
   IMAGE: dwk-environments
   DEPLOYMENT: dwk-environments
   # ${{ GITHUB_REF#refs/heads/  == 'main' && 'main' || GITHUB_REF#refs/heads/ }} 
-  NAMESPACE2: ${{ github.ref != 'refs/heads/main' && 'main' || github.ref }}
+  NAMESPACE2: ${{ github.ref != 'refs/heads/main' && 'default' || github.ref }}
 
 jobs:
   build-publish-deploy:
@@ -29,6 +29,10 @@ jobs:
           echo namespace: $NAMESPACE
           echo namespace2: $NAMESPACE2
 
+      - name: github context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
       - name: Checkout
         uses: actions/checkout@v4
