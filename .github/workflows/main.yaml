@@ -10,7 +10,7 @@ env:
   IMAGE: dwk-environments
   DEPLOYMENT: dwk-environments
   # ${{ GITHUB_REF#refs/heads/  == 'main' && 'main' || GITHUB_REF#refs/heads/ }} 
-  NAMESPACE2: ${{ github.ref == 'refs/heads/main' && 'main' || 'value_for_other_branches' }}
+  NAMESPACE2: ${{ github.ref != 'refs/heads/main' && 'main' || github.ref }}
 
 jobs:
   build-publish-deploy:
@@ -18,6 +18,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: define namespace
+        run: | 
+          NAMESPACE=main
+          echo namespace: $NAMESPACE
+
+      - name: print namespace
+        run: | 
+          echo namespace: $NAMESPACE
+          echo namespace2: $NAMESPACE2
+
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -53,17 +65,7 @@ jobs:
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
-
-      - name: define namespace
-        run: | 
-          NAMESPACE=main
-          echo namespace: $NAMESPACE
-
-      - name: print namespace
-        run: | 
-          echo namespace: $NAMESPACE
-          echo namespace2: $NAMESPACE2
-
+    
       - name: Deploy
         run: |-
           kubectl create namespace ${GITHUB_REF#refs/heads/} || true
