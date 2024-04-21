@@ -52,12 +52,15 @@ jobs:
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
-    
+
+      - name: print namespace
+        run: echo $NAMESPACE
+
       - name: Deploy
         run: |-
-          kubectl create namespace ${env.NAMESPACE} || true
-          kubectl config set-context --current --namespace=${env.NAMESPACE}
-          kustomize edit set namespace ${env.NAMESPACE}
+          kubectl create namespace $NAMESPACE || true
+          kubectl config set-context --current --namespace=$NAMESPACE
+          kustomize edit set namespace $NAMESPACE
           kustomize edit set image PROJECT/IMAGE=gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment $DEPLOYMENT
