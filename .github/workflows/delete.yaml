@@ -1,6 +1,5 @@
-name: Branch Deleted
+name: Clean up deployment
 on: delete
-
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -18,3 +17,31 @@ jobs:
           echo "Clean up for branch ${{ github.event.ref }}"
           echo "Clean up for branch ${{ github.ref_name }}"
           echo "Clean up for branch $NAMESPACE"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GKE_SA_KEY }}'
+      
+      - name: 'Set up Cloud SDK'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: 'Use gcloud CLI'
+        run: gcloud info
+
+      - run: gcloud --quiet auth configure-docker
+ 
+      - name: 'Get GKE credentials'
+        uses: 'google-github-actions/get-gke-credentials@v2'
+        with:
+          cluster_name: '${{ env.GKE_CLUSTER }}'
+          project_id: '${{ env.PROJECT_ID }}'
+          location: '${{ env.GKE_ZONE }}'
+
+      - name: Delete objects
+        run: |-
+          kustomize edit set namespace $NAMESPACE
+          kustomize build . | kubectl delete -f -
+          kubectl delete namespace $NAMESPACE
