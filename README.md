@@ -1,6 +1,6 @@
 ```mermaid
   graph TD;
-      A-->B;
+      A[This is the text in the box]-->B;
       A-->C;
       B-->D;
       C-->D;
